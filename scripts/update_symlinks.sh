@@ -40,6 +40,7 @@ create_symlink() {
 
 # List of files to symlink (source -> target)
 create_symlink "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
+create_symlink "$HOME/dotfiles/.bashrc.private" "$HOME/.bashrc.private"
 create_symlink "$HOME/dotfiles/.tmux.conf" "$HOME/.tmux.conf"
 create_symlink "$HOME/dotfiles/.config/nvim" "$HOME/.config/nvim"
 
