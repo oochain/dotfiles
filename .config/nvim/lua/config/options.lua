@@ -8,4 +8,4 @@ opts.relativenumber = false
 -- Sync with system clipboard
 opts.clipboard = "unnamedplus"
 -- Disable smooth scrolling
-vim.g.snacks_animate = false
+-- vim.g.snacks_animate = false
