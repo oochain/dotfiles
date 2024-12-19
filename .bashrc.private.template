@@ -1,0 +1,20 @@
+# Example configuration for .bashrc.private
+# Copy this file to .bashrc.private and modify with your settings
+
+# Git configurations for different services
+git_config_personal() {
+	git config user.name "Your Name"
+	git config user.email "your.email@example.com"
+}
+
+git_config_work() {
+	git config user.name "Your Work Name"
+	git config user.email "your.work.email@company.com"
+}
+
+# Project paths for 'wo' function
+declare -A PROJECT_PATHS=(
+	["project1"]="/path/to/project1"
+	["project2"]="/path/to/project2"
+	# Add more project paths as needed
+)
