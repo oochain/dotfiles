@@ -36,7 +36,7 @@ fi
 
 # Package groups
 CORE_PACKAGES="build-essential libreadline-dev libssl-dev"
-UTIL_PACKAGES="curl wget unzip jq tree fail2ban network-manager"
+UTIL_PACKAGES="curl wget unzip jq tree fail2ban network-manager fonts-noto-cjk language-pack-zh-hans xfonts-wqy"
 PYTHON_PACKAGES="python3-pip python3-venv pipx"
 NVIM_PACKAGES="fd-find lua5.1 luarocks fish fzf"
 
