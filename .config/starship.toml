@@ -1,0 +1,24 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = false
+
+[username]
+disabled = true
+
+[hostname]
+disabled = true
+
+[python]
+symbol = " "
+
+[git_branch]
+disabled = true
+
+[aws]
+symbol = "󰸏 "
+format = "on [$symbol$profile]($style) "
+
+[package]
+disabled = true
