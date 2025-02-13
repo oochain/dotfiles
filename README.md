@@ -38,9 +38,6 @@ cp .bashrc.private.template .bashrc.private
 
 - `scripts/update_symlinks.sh`
   Manages dotfiles symlinks with automatic backup
-  
-- `scripts/switch_netplan.sh` & `setup_hyperv_switch.ps1`
-  Network configuration tools for Hyper-V Ubuntu VM
 
 ## Private Configuration
 
