@@ -185,12 +185,16 @@ else
 	uv self update
 fi
 
+# Install starship
+curl -sS https://starship.rs/install.sh | sh
+
 # Add paths to ~/.bashrc if they don't exist
 declare -a paths=(
 	'eval "$(uv generate-shell-completion bash)"'
 	'eval "$(uvx --generate-shell-completion bash)"'
 	'export PATH="$PATH:/opt/nvim-linux64/bin"'
 	'export PATH="$PATH:$HOME/.local/share/nvim/lazy-rocks/hererocks/bin"'
+	'eval "$(starship init bash)"'
 )
 
 for path in "${paths[@]}"; do
