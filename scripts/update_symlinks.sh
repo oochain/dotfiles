@@ -43,5 +43,6 @@ create_symlink "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
 create_symlink "$HOME/dotfiles/.bashrc.private" "$HOME/.bashrc.private"
 create_symlink "$HOME/dotfiles/.tmux.conf" "$HOME/.tmux.conf"
 create_symlink "$HOME/dotfiles/.config/nvim" "$HOME/.config/nvim"
+create_symlink "$HOME/dotfiles/.config/starship.toml" "$HOME/.config/starship.toml"
 
 echo -e "${GREEN}Completed! Backup directory: $backup_dir${NC}"
