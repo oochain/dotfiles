@@ -37,8 +37,6 @@ local function lookup_ip_location()
     border = "rounded",
   })
 
-  vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
-  vim.api.nvim_buf_set_option(buf, "modifiable", true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "Loading location for " .. ip .. "..." })
 
   local response_chunks = {}
