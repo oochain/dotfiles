@@ -1,3 +1,4 @@
 **/lazy-lock.json
 .bashrc.private
 .tmux
+!.config/
