@@ -5,6 +5,14 @@ return {
       picker = {
         hidden = true, -- for dotfiles
         ignored = true, -- for gitignored files
+        exclude = {
+          ".git",
+          ".ruff_cache",
+          ".venv",
+          ".pytest_cache",
+          "__pycache__",
+          "*.egg-info",
+        },
       },
     },
   },
