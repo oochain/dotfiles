@@ -143,8 +143,16 @@ fi
 
 wo() {
 	[[ "$VIRTUAL_ENV" != "" ]] && deactivate
-
 	local target_dir=${PROJECT_PATHS[$1]}
+
+	if [[ -z "$1" ]]; then
+		echo "Available projects:"
+		for key in "${!PROJECT_PATHS[@]}"; do
+			echo "  $key -> ${PROJECT_PATHS[$key]}"
+		done
+		return 0
+	fi
+
 	if [[ -z "$target_dir" && -d "/work/$1" ]]; then
 		target_dir="/work/$1"
 	fi
@@ -152,7 +160,10 @@ wo() {
 	if [[ -n "$target_dir" ]]; then
 		cd "$target_dir"
 	else
-		echo "No specific path defined for '$1'. Staying in current directory."
+		echo "No specific path defined for '$1'. Available projects:"
+		for key in "${!PROJECT_PATHS[@]}"; do
+			echo "  $key -> ${PROJECT_PATHS[$key]}"
+		done
 		return 1
 	fi
 
