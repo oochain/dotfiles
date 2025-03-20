@@ -11,7 +11,7 @@ check_success() {
 }
 
 # Update and install necessary packages
-sudo apt update && sudo apt install -y xterm i3 tigervnc-standalone-server unzip fontconfig
+sudo apt update && sudo apt install -y xterm i3 i3blocks tigervnc-standalone-server unzip fontconfig
 check_success "Failed to install packages"
 
 # Set VNC password only if it doesn't exist
@@ -155,7 +155,7 @@ default_floating_border pixel 2
 
 # Start i3bar to display a workspace bar
 bar {
-        status_command i3status
+        status_command i3blocks
         position bottom
         colors {
             background #000000
@@ -173,6 +173,54 @@ bar {
 exec --no-startup-id "i3-msg 'workspace 1; exec xterm'"
 EOF
 check_success "Failed to create i3 config"
+
+# Create and configure i3blocks
+mkdir -p ~/.config/i3blocks
+cat <<EOF >~/.config/i3blocks/config
+# i3blocks config file
+# Global properties
+command=/usr/share/i3blocks/$BLOCK_NAME
+separator_block_width=15
+markup=none
+
+# Network interface monitoring with green IP
+[iface]
+#instance=wlan0
+color=#00FF00
+interval=10
+
+# Network speed
+[bandwidth]
+#instance=eth0
+color=#00AAFF
+interval=5
+
+# CPU usage
+[cpu_usage]
+label=CPU
+color=#FF5555
+interval=10
+min_width=CPU: 100.00%
+
+# Memory usage
+[memory]
+label=MEM
+color=#88FF88
+interval=30
+
+# Disk usage
+[disk]
+label=DISK
+color=#FFAA00
+interval=30
+
+# Date Time
+[time]
+command=date '+%Y-%m-%d %H:%M:%S'
+color=#AAAAFF
+interval=5
+EOF
+check_success "Failed to create i3blocks config"
 
 # Create xstartup file
 mkdir -p ~/.vnc
