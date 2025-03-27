@@ -86,9 +86,9 @@ curl -LsSf https://astral.sh/ruff/install.sh | sh
 # Install Neovim
 if ! command_exists nvim; then
 	echo "Installing Neovim..."
-	curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+	curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
 	sudo rm -rf /opt/nvim
-	sudo tar -C /opt -xzf nvim-linux64.tar.gz
+	sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
 else
 	echo "Neovim already installed"
 fi
@@ -192,7 +192,7 @@ curl -sS https://starship.rs/install.sh | sh
 declare -a paths=(
 	'eval "$(uv generate-shell-completion bash)"'
 	'eval "$(uvx --generate-shell-completion bash)"'
-	'export PATH="$PATH:/opt/nvim-linux64/bin"'
+	'export PATH="$PATH:/opt/nvim-linux-x86_64/bin"'
 	'export PATH="$PATH:$HOME/.local/share/nvim/lazy-rocks/hererocks/bin"'
 	'eval "$(starship init bash)"'
 )
