@@ -40,7 +40,7 @@ UTIL_PACKAGES="curl wget unzip jq tree \
     fail2ban network-manager \
     fonts-noto-cjk language-pack-zh-hans xfonts-wqy \
     moreutils pwgen"
-PYTHON_PACKAGES="python3-pip python3-venv pipx"
+PYTHON_PACKAGES="clang python3-pip python3-venv pipx"
 NVIM_PACKAGES="fd-find lua5.1 luarocks fish fzf"
 
 echo "Installing system packages..."
