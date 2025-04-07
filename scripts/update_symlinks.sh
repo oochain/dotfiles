@@ -40,7 +40,17 @@ create_symlink() {
 
 # List of files to symlink (source -> target)
 create_symlink "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
-create_symlink "$HOME/dotfiles/.bashrc.private" "$HOME/.bashrc.private"
+if [ ! -e "$HOME/dotfiles/.bashrc.private" ]; then
+	echo -e "${YELLOW}Source file $HOME/dotfiles/.bashrc.private does not exist${NC}"
+	if [ -e "$HOME/dotfiles/.bashrc.private.template" ]; then
+		cp "$HOME/dotfiles/.bashrc.private.template" "$HOME/.bashrc.private"
+		echo -e "${GREEN}Copied template: $HOME/dotfiles/.bashrc.private.template to $HOME/.bashrc.private${NC}"
+	else
+		echo -e "${RED}Error: Template file $HOME/dotfiles/.bashrc.private.template does not exist${NC}"
+	fi
+else
+	create_symlink "$HOME/dotfiles/.bashrc.private" "$HOME/.bashrc.private"
+fi
 create_symlink "$HOME/dotfiles/.tmux.conf" "$HOME/.tmux.conf"
 create_symlink "$HOME/dotfiles/.config/nvim" "$HOME/.config/nvim"
 create_symlink "$HOME/dotfiles/.config/starship.toml" "$HOME/.config/starship.toml"
