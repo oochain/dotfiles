@@ -195,7 +195,7 @@ else
 fi
 
 # Install starship
-curl -sS https://starship.rs/install.sh | sh
+curl -sS https://starship.rs/install.sh | sh -s -- -y
 
 # Add paths to ~/.bashrc if they don't exist
 declare -a paths=(
