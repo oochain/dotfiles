@@ -194,6 +194,9 @@ else
 	uv self update
 fi
 
+# Install rust + cargo (starship dependency)
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+
 # Install starship
 curl -sS https://starship.rs/install.sh | sh -s -- -y
 
