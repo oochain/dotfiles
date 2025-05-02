@@ -202,10 +202,11 @@ curl -sS https://starship.rs/install.sh | sh -s -- -y
 
 # Add paths to ~/.bashrc if they don't exist
 declare -a paths=(
-	'eval "$(uv generate-shell-completion bash)"'
-	'eval "$(uvx --generate-shell-completion bash)"'
+	'. "$HOME/.cargo/env"' # luarocks
 	'export PATH="$PATH:/opt/nvim-linux-x86_64/bin"'
 	'export PATH="$PATH:$HOME/.local/share/nvim/lazy-rocks/hererocks/bin"'
+	'eval "$(uv generate-shell-completion bash)"'
+	'eval "$(uvx --generate-shell-completion bash)"'
 	'eval "$(starship init bash)"'
 )
 
