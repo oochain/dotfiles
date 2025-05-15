@@ -200,6 +200,10 @@ curl https://sh.rustup.rs -sSf | sh -s -- -y
 # Install starship
 curl -sS https://starship.rs/install.sh | sh -s -- -y
 
+# Install git-subrepo
+git clone https://github.com/ingydotnet/git-subrepo ~
+echo 'source ~/git-subrepo/.rc' >>~/.bashrc
+
 # Add paths to ~/.bashrc if they don't exist
 declare -a paths=(
 	'. "$HOME/.cargo/env"' # luarocks
