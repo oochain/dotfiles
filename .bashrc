@@ -200,36 +200,20 @@ clear_nvim() {
 
 # Function to source .bashrc in all tmux panes
 source_bashrc() {
-	# Store current directory
 	local orig_dir=$(pwd)
+	cd && source ~/.bashrc
+	[ -d "$orig_dir" ] && cd "$orig_dir"
 
-	# First cd to home directory to avoid pwd errors
-	cd
-
-	# Source bashrc from a known good directory
-	source ~/.bashrc
-
-	# Return to original directory if it still exists
-	if [ -d "$orig_dir" ]; then
-		cd "$orig_dir"
-	fi
-
-	# If we're in tmux, source bashrc in all other panes
 	if [ -n "$TMUX" ]; then
-		# Get all pane IDs except current one
 		local current_pane=$(tmux display-message -p '#P')
-		local all_panes=$(tmux list-panes -F '#P')
-		for pane in $all_panes; do
+		tmux list-panes -F '#P' | while read pane; do
 			if [ "$pane" != "$current_pane" ]; then
-				# Save and restore directory in other panes
-				tmux send-keys -t $pane "ORIG_DIR=\$(pwd); cd; source ~/.bashrc; [ -d \"\$ORIG_DIR\" ] && cd \"\$ORIG_DIR\"" Enter
+				# Get the current directory of the target pane
+				local target_dir=$(tmux display-message -t $pane -p '#{pane_current_path}')
+				# Execute the sourcing command
+				tmux send-keys -t $pane "cd && source ~/.bashrc && cd '$target_dir'" Enter
 			fi
 		done
-		RIG_DIR=$(pwd)
-		cd
-		source ~/.bashrc
-		[ -d "$ORIG_DIR" ] && cd "$ORIG_DIR"
-
 	fi
 }
 
