@@ -189,7 +189,7 @@ mkdir -p ~/.config/i3blocks
 cat <<EOF >~/.config/i3blocks/config
 # i3blocks config file
 # Global properties
-command=/usr/share/i3blocks/$BLOCK_NAME
+command=/usr/share/i3blocks/\$BLOCK_NAME
 separator_block_width=15
 markup=none
 
