@@ -201,8 +201,8 @@ curl https://sh.rustup.rs -sSf | sh -s -- -y
 curl -sS https://starship.rs/install.sh | sh -s -- -y
 
 # Install git-subrepo
-git clone https://github.com/ingydotnet/git-subrepo ~
-echo 'source ~/git-subrepo/.rc' >>~/.bashrc
+rm -rf ~/git-subrepo
+git clone https://github.com/ingydotnet/git-subrepo ~/git-subrepo
 
 # Add paths to ~/.bashrc if they don't exist
 declare -a paths=(
@@ -212,6 +212,7 @@ declare -a paths=(
 	'eval "$(uv generate-shell-completion bash)"'
 	'eval "$(uvx --generate-shell-completion bash)"'
 	'eval "$(starship init bash)"'
+	'source ~/git-subrepo/.rc'
 )
 
 for path in "${paths[@]}"; do
