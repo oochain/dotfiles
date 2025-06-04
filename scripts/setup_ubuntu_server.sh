@@ -206,13 +206,13 @@ git clone https://github.com/ingydotnet/git-subrepo ~/git-subrepo
 
 # Add paths to ~/.bashrc if they don't exist
 declare -a paths=(
-	'. "$HOME/.cargo/env"' # luarocks
+	'source ~/git-subrepo/.rc'
+	'. "$HOME/.cargo/env"'
 	'export PATH="$PATH:/opt/nvim-linux-x86_64/bin"'
 	'export PATH="$PATH:$HOME/.local/share/nvim/lazy-rocks/hererocks/bin"'
-	'eval "$(uv generate-shell-completion bash)"'
-	'eval "$(uvx --generate-shell-completion bash)"'
+	'eval "$($HOME/.local/bin/uv generate-shell-completion bash)"'
+	'eval "$($HOME/.local/bin/uvx --generate-shell-completion bash)"'
 	'eval "$(starship init bash)"'
-	'source ~/git-subrepo/.rc'
 )
 
 for path in "${paths[@]}"; do
