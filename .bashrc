@@ -209,11 +209,6 @@ source_bashrc() {
 	fi
 }
 
-# used to match what's in .pre-commmit
-ruff_downgrade() {
-	~/.local/share/nvim/mason/packages/ruff/venv/bin/pip install ruff==0.7.0
-}
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
