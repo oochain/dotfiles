@@ -133,6 +133,7 @@ else
 	echo "Warning: ~/.bashrc.private not found."
 fi
 
+# work on project(optional)
 wo() {
 	[[ "$VIRTUAL_ENV" != "" ]] && deactivate
 	local target_dir=${PROJECT_PATHS[$1]}
@@ -166,6 +167,7 @@ wo() {
 	export PS1='(\[\033[01;32m\]'"$1"'\[\033[00m\]) \[\033[01;34m\]\W\[\033[00m\]$(__git_ps1 " (\[\033[01;31m\]%s\[\033[00m\])")\$ '
 }
 
+# update upgrade then prune
 uup() {
 	sudo apt update && sudo apt full-upgrade --fix-missing -y && sudo apt autoremove -y
 }
@@ -207,6 +209,20 @@ source_bashrc() {
 			fi
 		done
 	fi
+}
+
+# tmux shortcuts
+t() {
+	if [[ -z "$1" ]]; then
+		tmux ls
+	else
+		if tmux has-session -t "$1"; then
+			tmux attach -t "$1"
+		else
+			tmux new -s "$1"
+		fi
+	fi
+
 }
 
 export NVM_DIR="$HOME/.nvm"
