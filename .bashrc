@@ -169,7 +169,10 @@ wo() {
 
 # update upgrade then prune
 uup() {
-	sudo apt update && sudo apt full-upgrade --fix-missing -y && sudo apt autoremove -y
+	sudo apt update
+	sudo apt full-upgrade --fix-missing -y
+	sudo apt reinstall ubuntu-release-upgrader-core
+	sudo apt autoremove -y
 }
 
 export_pythonpath() {
