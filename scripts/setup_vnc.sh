@@ -214,13 +214,13 @@ min_width=CPU: 100.00%
 
 # Memory usage
 [memory]
-label=MEM
+label=MEM USED
 color=#88FF88
 interval=30
 
 # Disk usage
 [disk]
-label=DISK
+label=DISK FREE
 color=#FFAA00
 interval=30
 
