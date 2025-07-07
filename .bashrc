@@ -117,7 +117,7 @@ if ! shopt -oq posix; then
 fi
 
 # Ensure PROJECT_PATHS is defined even if private config is missing
-declare -A PROJECT_PATHS=${PROJECT_PATHS[@]+"${PROJECT_PATHS[@]}"}
+declare -A PROJECT_PATHS
 
 # Make the example paths more generic in the comment
 # workon example incase .bashrc.private lost
@@ -126,12 +126,21 @@ declare -A PROJECT_PATHS=${PROJECT_PATHS[@]+"${PROJECT_PATHS[@]}"}
 #     ["hl"]="/github/homelab"
 # )
 
-# Load private configurations if they exist
-if [ -f ~/.bashrc.private ]; then
-	source ~/.bashrc.private
-else
-	echo "Warning: ~/.bashrc.private not found."
-fi
+# Load all .bashrc.xxx configurations and merge PROJECT_PATHS
+for config_file in ~/.bashrc.*; do
+	if [[ -f "$config_file" ]]; then
+		# Clear temp array before sourcing
+		unset PROJECT_PATHS_TEMP
+		source "$config_file"
+
+		# Merge PROJECT_PATHS_TEMP if it exists
+		if [[ ${#PROJECT_PATHS_TEMP[@]} -gt 0 ]]; then
+			for key in "${!PROJECT_PATHS_TEMP[@]}"; do
+				PROJECT_PATHS["$key"]="${PROJECT_PATHS_TEMP[$key]}"
+			done
+		fi
+	fi
+done
 
 # work on project(optional)
 wo() {
