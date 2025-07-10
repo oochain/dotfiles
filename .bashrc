@@ -253,3 +253,50 @@ eval "$($HOME/.local/bin/uv generate-shell-completion bash)"
 eval "$($HOME/.local/bin/uvx --generate-shell-completion bash)"
 
 eval "$(starship init bash)"
+
+# Can't take the rm risk again so force move it to bin folder
+rm() {
+	local force=false
+	local recursive=false
+	local files=()
+
+	# Parse arguments
+	while [[ $# -gt 0 ]]; do
+		case $1 in
+		-f | --force)
+			force=true
+			shift
+			;;
+		-r | -R | --recursive)
+			recursive=true
+			shift
+			;;
+		-rf | -fr)
+			force=true
+			recursive=true
+			shift
+			;;
+		-*)
+			echo "rm: option '$1' not supported in safe mode"
+			return 1
+			;;
+		*)
+			files+=("$1")
+			shift
+			;;
+		esac
+	done
+
+	# Create bin directory if it doesn't exist
+	mkdir -p ~/Downloads/bin
+
+	# Move files
+	for file in "${files[@]}"; do
+		if [[ -e "$file" ]]; then
+			mv "$file" ~/Downloads/bin/
+			echo "Moved $file to ~/Downloads/bin/"
+		else
+			echo "rm: cannot remove '$file': No such file or directory"
+		fi
+	done
+}
