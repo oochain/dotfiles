@@ -11,7 +11,7 @@ check_success() {
 }
 
 # Update and install necessary packages
-sudo apt update && sudo apt install -y xterm i3 i3blocks tigervnc-standalone-server unzip fontconfig
+sudo apt update && sudo apt install -y xfce4-terminal i3 i3blocks tigervnc-standalone-server unzip fontconfig
 check_success "Failed to install packages"
 
 # Set VNC password only if it doesn't exist
@@ -39,21 +39,26 @@ else
 	echo "Nerd Font already exists. Skipping download and installation."
 fi
 
-# Create/Update Xresources file
+# Create/Update Xresources file  
 cat <<EOF >~/.Xresources
-! XTerm settings
-xterm*faceName: CaskaydiaCoveNerdFontMono
-xterm*faceSize: 14
-xterm*renderFont: true
-xterm*background: black
-xterm*foreground: lightgray
-
 ! Better font rendering
 Xft.antialias: 1
 Xft.hinting: 1
 Xft.rgba: rgb
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
+EOF
+
+# Create xfce4-terminal config directory and file
+mkdir -p ~/.config/xfce4/terminal
+cat <<EOF >~/.config/xfce4/terminal/terminalrc
+[Configuration]
+FontName=CaskaydiaCoveNerdFontMono 13
+BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
+BackgroundDarkness=0.95
+ColorForeground=#d4d4d4
+ColorBackground=#1e1e1e
+ScrollingBar=TERMINAL_SCROLLBAR_NONE
 EOF
 check_success "Failed to create Xresources file"
 
@@ -66,7 +71,7 @@ cat <<EOF >~/.config/i3/config
 set \$mod Mod1
 
 # Set terminal
-set \$terminal xterm
+set \$terminal xfce4-terminal
 
 # Font for window titles
 font pango:CaskaydiaCoveNerdFontMono 10
@@ -180,7 +185,7 @@ bar {
 }
 
 # Start terminal in workspace 1 by default
-exec --no-startup-id "i3-msg 'workspace 1; exec xterm'"
+exec --no-startup-id "i3-msg 'workspace 1; exec xfce4-terminal'"
 EOF
 check_success "Failed to create i3 config"
 
