@@ -12,6 +12,7 @@ return {
           ".pytest_cache",
           "__pycache__",
           "*.egg-info",
+          "node_modules",
         },
       },
     },
