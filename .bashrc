@@ -189,12 +189,16 @@ export_pythonpath() {
 	echo "Update PYTHONPATH to: $PYTHONPATH"
 }
 
-export_display_ssh() {
+ed() {
+	echo $DISPLAY
+}
+
+eds() {
 	export DISPLAY=localhost:10.0
 	echo "Update DISPLAY to SSH: $DISPLAY"
 }
 
-export_display_vnc() {
+edv() {
 	export DISPLAY=:2
 	echo "Update DISPLAY to VNC: $DISPLAY"
 }
