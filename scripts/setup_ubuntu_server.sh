@@ -139,6 +139,127 @@ else
 	echo "Google Chrome already installed"
 fi
 
+# Chrome needs additional Nerd Fonts as fallback fonts for symbols and CJK characters
+setup_chrome_fonts() {
+	echo "Configuring Chrome font support..."
+
+	# Create fontconfig directory
+	mkdir -p ~/.config/fontconfig/conf.d/
+
+	# Create font configuration for proper fallback
+	cat <<EOF >~/.config/fontconfig/conf.d/10-chrome-nerd-fonts.conf
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+    <!-- Configure font fallback for Chrome -->
+    <alias>
+        <family>sans-serif</family>
+        <prefer>
+            <family>Noto Sans CJK SC</family>
+            <family>CaskaydiaCoveNerdFont</family>
+            <family>Noto Color Emoji</family>
+            <family>DejaVu Sans</family>
+        </prefer>
+    </alias>
+    
+    <alias>
+        <family>serif</family>
+        <prefer>
+            <family>Noto Serif CJK SC</family>
+            <family>CaskaydiaCoveNerdFont</family>
+            <family>Noto Color Emoji</family>
+            <family>DejaVu Serif</family>
+        </prefer>
+    </alias>
+    
+    <alias>
+        <family>monospace</family>
+        <prefer>
+            <family>CaskaydiaCoveNerdFont</family>
+            <family>Noto Sans Mono CJK SC</family>
+            <family>DejaVu Sans Mono</family>
+        </prefer>
+    </alias>
+    
+    <!-- Ensure symbols render properly -->
+    <match target="pattern">
+        <test name="family">
+            <string>sans-serif</string>
+        </test>
+        <edit name="family" mode="prepend" binding="weak">
+            <string>CaskaydiaCoveNerdFont</string>
+        </edit>
+    </match>
+</fontconfig>
+EOF
+
+	# Install additional font packages for better coverage
+	sudo apt install -y fonts-noto-color-emoji fonts-liberation2 fonts-dejavu
+
+	# Refresh font cache
+	fc-cache -fv
+
+	# Create Chrome font preferences (this sets defaults for new profiles)
+	CHROME_PREFS_DIR="$HOME/.config/google-chrome/Default"
+	if [ -d "$CHROME_PREFS_DIR" ]; then
+		# Backup existing preferences
+		[ -f "$CHROME_PREFS_DIR/Preferences" ] && cp "$CHROME_PREFS_DIR/Preferences" "$CHROME_PREFS_DIR/Preferences.backup"
+
+		# Set font preferences in Chrome
+		python3 -c "
+import json
+import os
+
+prefs_file = '$CHROME_PREFS_DIR/Preferences'
+prefs = {}
+
+if os.path.exists(prefs_file):
+    with open(prefs_file, 'r') as f:
+        try:
+            prefs = json.load(f)
+        except json.JSONDecodeError:
+            prefs = {}
+
+# Set font preferences
+if 'webkit' not in prefs:
+    prefs['webkit'] = {}
+if 'webprefs' not in prefs['webkit']:
+    prefs['webkit']['webprefs'] = {}
+
+font_prefs = {
+    'fonts': {
+        'fixed': {
+            'Zyyy': 'CaskaydiaCoveNerdFont',
+            'Hans': 'Noto Sans Mono CJK SC'
+        },
+        'sansserif': {
+            'Zyyy': 'CaskaydiaCoveNerdFont',
+            'Hans': 'Noto Sans CJK SC'
+        },
+        'serif': {
+            'Zyyy': 'CaskaydiaCoveNerdFont', 
+            'Hans': 'Noto Serif CJK SC'
+        },
+        'standard': {
+            'Zyyy': 'CaskaydiaCoveNerdFont',
+            'Hans': 'Noto Sans CJK SC'
+        }
+    }
+}
+
+prefs['webkit']['webprefs'].update(font_prefs)
+
+with open(prefs_file, 'w') as f:
+    json.dump(prefs, f, indent=2)
+" 2>/dev/null || echo "Chrome preferences will be set on first run"
+	fi
+
+	echo "Chrome font configuration completed."
+	echo "Please restart Chrome for changes to take effect."
+}
+
+setup_chrome_fonts
+
 # Install Docker
 if ! command -v docker &>/dev/null; then
 	echo "Installing Docker..."
