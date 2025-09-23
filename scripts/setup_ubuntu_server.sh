@@ -83,15 +83,13 @@ fi
 # Install ruff
 curl -LsSf https://astral.sh/ruff/install.sh | sh
 
-# Install Neovim
-if ! command_exists nvim; then
-	echo "Installing Neovim..."
-	curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
-	sudo rm -rf /opt/nvim
-	sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
-else
-	echo "Neovim already installed"
-fi
+# Install/Update Neovim to v0.11.4
+echo "Installing/Updating Neovim to v0.11.4..."
+sudo rm -rf /opt/nvim /opt/nvim-linux-x86_64 # Remove old versions
+curl -LO https://github.com/neovim/neovim/releases/download/v0.11.4/nvim-linux-x86_64.tar.gz
+sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+rm nvim-linux-x86_64.tar.gz
+echo "Neovim v0.11.4 installed."
 
 # Install Terraform
 if ! command_exists terraform; then
