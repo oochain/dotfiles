@@ -39,7 +39,7 @@ else
 	echo "Nerd Font already exists. Skipping download and installation."
 fi
 
-# Create/Update Xresources file  
+# Create/Update Xresources file
 cat <<EOF >~/.Xresources
 ! Better font rendering
 Xft.antialias: 1
@@ -229,10 +229,18 @@ label=DISK FREE
 color=#FFAA00
 interval=30
 
-# Date Time
-[time]
-command=date '+%Y-%m-%d %H:%M:%S'
+# UTC time
+[time-utc]
+label=UTC 
+command=date -u '+%Y-%m-%d %H:%M:%S'
 color=#AAAAFF
+interval=5
+
+# Canberra time
+[time-canberra]
+label=CAN 
+command=TZ="Australia/Canberra" date '+%Y-%m-%d %H:%M:%S'
+color=#AAFFAA
 interval=5
 EOF
 check_success "Failed to create i3blocks config"
