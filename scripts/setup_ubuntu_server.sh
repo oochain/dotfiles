@@ -324,6 +324,13 @@ curl -sS https://starship.rs/install.sh | sh -s -- -y
 rm -rf ~/git-subrepo
 git clone https://github.com/ingydotnet/git-subrepo ~/git-subrepo
 
+# Install litestream (just need cli so no need to launch systemctl)
+wget https://github.com/benbjohnson/litestream/releases/download/v0.3.13/litestream-v0.3.13-linux-amd64.deb
+sudo dpkg -i litestream-v0.3.13-linux-amd64.deb
+# systemctl enable litestream
+# systemctl start litestream
+rm -rf litestream-v0.3.13-linux-amd64.deb
+
 # Add paths to ~/.bashrc if they don't exist
 declare -a paths=(
 	'source ~/git-subrepo/.rc'
