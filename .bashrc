@@ -126,6 +126,7 @@ declare -A PROJECT_PATHS
 #     ["hl"]="/github/homelab"
 # )
 
+PROJECT_PATHS=()
 # Load all .bashrc.xxx configurations and merge PROJECT_PATHS
 for config_file in ~/.bashrc.*; do
 	if [[ -f "$config_file" ]]; then
@@ -145,7 +146,6 @@ done
 # work on project(optional)
 wo() {
 	[[ "$VIRTUAL_ENV" != "" ]] && deactivate
-	local target_dir=${PROJECT_PATHS[$1]}
 
 	if [[ -z "$1" ]]; then
 		echo "Available projects:"
@@ -154,6 +154,8 @@ wo() {
 		done
 		return 0
 	fi
+
+	local target_dir=${PROJECT_PATHS[$1]}
 
 	if [[ -z "$target_dir" && -d "/work/$1" ]]; then
 		target_dir="/work/$1"
