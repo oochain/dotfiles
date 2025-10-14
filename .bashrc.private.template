@@ -13,7 +13,7 @@ git_config_work() {
 }
 
 # Project paths for 'wo' function
-declare -A PROJECT_PATHS=(
+declare -A PROJECT_PATHS_TEMP=(
 	["project1"]="/path/to/project1"
 	["project2"]="/path/to/project2"
 	# Add more project paths as needed
