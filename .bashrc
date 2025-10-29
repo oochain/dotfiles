@@ -299,8 +299,10 @@ rm() {
 	# Move files
 	for file in "${files[@]}"; do
 		if [[ -e "$file" ]]; then
-			mv "$file" ~/Downloads/bin/
-			echo "Moved $file to ~/Downloads/bin/"
+			local dest_name
+			dest_name="$(basename "$file").$(date +%s%N)"
+			mv "$file" "$HOME/Downloads/bin/$dest_name"
+			echo "Moved '$file' to '~/Downloads/bin/$dest_name'"
 		else
 			echo "rm: cannot remove '$file': No such file or directory"
 		fi
