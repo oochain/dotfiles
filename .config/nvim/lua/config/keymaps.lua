@@ -181,6 +181,11 @@ local function lookup_ip_location()
   vim.keymap.set("n", "q", ":q<CR>", opts)
 end
 
+-- Add keybinding for realpath current file
+vim.keymap.set("n", "<leader>rp", function()
+  print(vim.fn.expand("%:p"))
+end, { desc = "Show realpath of current file" })
+
 -- Add keybinding for IP lookup
 vim.keymap.set("n", "<leader>ip", lookup_ip_location, {
   desc = "Lookup IP location under cursor",
