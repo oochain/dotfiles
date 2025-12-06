@@ -360,4 +360,17 @@ else
 	echo "TPM for tmux already installed."
 fi
 
+# Ensure standalone uv is first and clean PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Deduplicate PATH (removes repeated entries)
+PATH=$(awk -v RS=: '!a[$0]++{s=s (NR>1?":": "") $0} END{print s}' <<<"$PATH")
+
+# Refresh shell command cache
+hash -r
+
+# Reload environment for current shell
+grep -qxF 'export PATH="$HOME/.local/bin:$PATH"' ~/.bashrc || echo 'export PATH="$HOME/.local/bin:$PATH"' >>~/.bashrc
+source ~/.bashrc 2>/dev/null || true
+
 echo -e "${GREEN}Ubuntu setup completed successfully!${NC}"
