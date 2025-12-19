@@ -294,15 +294,15 @@ rm() {
 	done
 
 	# Create bin directory if it doesn't exist
-	mkdir -p ~/Downloads/bin
+	mkdir -p ~/.local/share/Trash
 
 	# Move files
 	for file in "${files[@]}"; do
 		if [[ -e "$file" ]]; then
 			local dest_name
 			dest_name="$(basename "$file").$(date +%s%N)"
-			mv "$file" "$HOME/Downloads/bin/$dest_name"
-			echo "Moved '$file' to '~/Downloads/bin/$dest_name'"
+			mv "$file" "$HOME/.local/share/Trash/$dest_name"
+			echo "Moved '$file' to '~/.local/share/Trash/$dest_name'"
 		else
 			echo "rm: cannot remove '$file': No such file or directory"
 		fi
