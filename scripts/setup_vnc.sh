@@ -11,8 +11,13 @@ check_success() {
 }
 
 # Update and install necessary packages
-sudo apt update && sudo apt install -y xfce4-terminal i3 i3blocks tigervnc-standalone-server unzip fontconfig
+sudo apt update && sudo apt install -y \
+	xfce4-terminal i3 i3blocks tigervnc-standalone-server unzip fontconfig \
+	locales xclip
 check_success "Failed to install packages"
+
+# Add locale generation
+sudo locale-gen en_US.UTF-8 zh_CN.UTF-8 ja_JP.UTF-8
 
 # Set VNC password only if it doesn't exist
 if [ ! -f ~/.vnc/passwd ]; then
@@ -34,7 +39,7 @@ EOF
 mkdir -p ~/.config/xfce4/terminal
 cat <<EOF >~/.config/xfce4/terminal/terminalrc
 [Configuration]
-FontName=CaskaydiaCoveNerdFontMono 13
+FontName=monospace 13
 BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
 BackgroundDarkness=0.95
 ColorForeground=#d4d4d4
@@ -55,7 +60,7 @@ set \$mod Mod1
 set \$terminal xfce4-terminal
 
 # Font for window titles
-font pango:CaskaydiaCoveNerdFontMono 10
+font pango:monospace 10
 
 # Use Mouse+\$mod to drag floating windows
 floating_modifier \$mod
@@ -237,8 +242,13 @@ unset DBUS_SESSION_BUS_ADDRESS
 exec 1>/tmp/vnc-startup.log 2>&1
 set -x
 
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
 # Load resources
 [ -r ~/.Xresources ] && xrdb ~/.Xresources
+
+command -v vncconfig >/dev/null 2>&1 && vncconfig -nowin -poll 1000 &
 
 # Start i3 with logging
 exec i3 -V >> /tmp/i3log 2>&1
@@ -247,6 +257,8 @@ chmod +x ~/.vnc/xstartup
 
 # Create VNC config file
 cat <<EOF >~/.vnc/config
+SendCutText=1
+AcceptCutText=1
 localhost=no
 geometry=2560x1440
 depth=24

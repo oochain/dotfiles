@@ -138,145 +138,62 @@ else
 	echo "Google Chrome already installed"
 fi
 
-# Check if Nerd Font already exists
-FONT_NAME="CaskaydiaCoveNerdFontMono-Regular.ttf"
-FONT_PATH="$HOME/.local/share/fonts/$FONT_NAME"
+# Install coverage fonts (already present is fine)
+sudo apt update
+sudo apt install -y \
+	fonts-noto-core fonts-noto-cjk fonts-noto-color-emoji fonts-noto-mono \
+	fonts-dejavu fonts-unifont || true
 
-if [ ! -f "$FONT_PATH" ]; then
-	echo "Nerd Font not found. Downloading and installing..."
-	# Download and install Nerd Font
-	wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/CascadiaCode.zip
-	unzip CascadiaCode.zip -d nerd-font-temp
-	mkdir -p ~/.local/share/fonts
-	mv nerd-font-temp/*.ttf ~/.local/share/fonts/
-	chmod 644 ~/.local/share/fonts/*.ttf
-	fc-cache -fv
-	rm -rf nerd-font-temp CascadiaCode.zip
-	echo "Nerd Font installed successfully."
-else
-	echo "Nerd Font already exists. Skipping download and installation."
-fi
+# Set up a font alias for monospace to use the desired Nerd Font.
+# This ensures that applications requesting a generic "monospace" font
+# will receive "Caskaydia Cove Nerd Font Mono".
+CONF_DIR="$HOME/.config/fontconfig/conf.d"
+mkdir -p "$CONF_DIR"
+CONF_FILE="$CONF_DIR/01-custom-monospace.conf"
 
-# Chrome needs additional Nerd Fonts as fallback fonts for symbols and CJK characters
-setup_chrome_fonts() {
-	echo "Configuring Chrome font support..."
-
-	# Create fontconfig directory
-	mkdir -p ~/.config/fontconfig/conf.d/
-
-	# Create font configuration for proper fallback
-	cat <<EOF >~/.config/fontconfig/conf.d/10-chrome-nerd-fonts.conf
+echo "Creating font alias for monospace to Caskaydia Cove Nerd Font Mono..."
+cat <<'EOF' >"$CONF_FILE"
 <?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
-    <!-- Configure font fallback for Chrome -->
-    <alias>
-        <family>sans-serif</family>
-        <prefer>
-            <family>Noto Sans CJK SC</family>
-            <family>CaskaydiaCoveNerdFont</family>
-            <family>Noto Color Emoji</family>
-            <family>DejaVu Sans</family>
-        </prefer>
-    </alias>
-    
-    <alias>
-        <family>serif</family>
-        <prefer>
-            <family>Noto Serif CJK SC</family>
-            <family>CaskaydiaCoveNerdFont</family>
-            <family>Noto Color Emoji</family>
-            <family>DejaVu Serif</family>
-        </prefer>
-    </alias>
-    
-    <alias>
-        <family>monospace</family>
-        <prefer>
-            <family>CaskaydiaCoveNerdFont</family>
-            <family>Noto Sans Mono CJK SC</family>
-            <family>DejaVu Sans Mono</family>
-        </prefer>
-    </alias>
-    
-    <!-- Ensure symbols render properly -->
-    <match target="pattern">
-        <test name="family">
-            <string>sans-serif</string>
-        </test>
-        <edit name="family" mode="prepend" binding="weak">
-            <string>CaskaydiaCoveNerdFont</string>
-        </edit>
-    </match>
+  <alias>
+    <family>monospace</family>
+    <prefer>
+      <family>Caskaydia Cove Nerd Font Mono</family>
+    </prefer>
+  </alias>
 </fontconfig>
 EOF
 
-	# Install additional font packages for better coverage
-	sudo apt install -y fonts-noto-color-emoji fonts-liberation2 fonts-dejavu
+echo "Font alias created. Refreshing font cache..."
+fc-cache -fv
 
-	# Refresh font cache
-	fc-cache -fv
-
-	# Create Chrome font preferences (this sets defaults for new profiles)
-	CHROME_PREFS_DIR="$HOME/.config/google-chrome/Default"
-	if [ -d "$CHROME_PREFS_DIR" ]; then
-		# Backup existing preferences
-		[ -f "$CHROME_PREFS_DIR/Preferences" ] && cp "$CHROME_PREFS_DIR/Preferences" "$CHROME_PREFS_DIR/Preferences.backup"
-
-		# Set font preferences in Chrome
-		python3 -c "
-import json
-import os
-
-prefs_file = '$CHROME_PREFS_DIR/Preferences'
+# Set Chrome font prefs (Latin vs CJK)
+CHROME_PREFS_DIR="$HOME/.config/google-chrome/Default"
+if [ -d "$CHROME_PREFS_DIR" ]; then
+	[ -f "$CHROME_PREFS_DIR/Preferences" ] && cp "$CHROME_PREFS_DIR/Preferences" "$CHROME_PREFS_DIR/Preferences.backup"
+	python3 - <<'PY' 2>/dev/null || echo "Chrome preferences will be set on first run"
+import json, os
+prefs_file = os.path.expanduser('~/.config/google-chrome/Default/Preferences')
 prefs = {}
-
 if os.path.exists(prefs_file):
-    with open(prefs_file, 'r') as f:
-        try:
-            prefs = json.load(f)
-        except json.JSONDecodeError:
-            prefs = {}
-
-# Set font preferences
-if 'webkit' not in prefs:
-    prefs['webkit'] = {}
-if 'webprefs' not in prefs['webkit']:
-    prefs['webkit']['webprefs'] = {}
-
+    with open(prefs_file, 'r', encoding='utf-8') as f:
+        try: prefs = json.load(f)
+        except json.JSONDecodeError: prefs = {}
 font_prefs = {
     'fonts': {
-        'fixed': {
-            'Zyyy': 'CaskaydiaCoveNerdFont',
-            'Hans': 'Noto Sans Mono CJK SC'
-        },
-        'sansserif': {
-            'Zyyy': 'CaskaydiaCoveNerdFont',
-            'Hans': 'Noto Sans CJK SC'
-        },
-        'serif': {
-            'Zyyy': 'CaskaydiaCoveNerdFont', 
-            'Hans': 'Noto Serif CJK SC'
-        },
-        'standard': {
-            'Zyyy': 'CaskaydiaCoveNerdFont',
-            'Hans': 'Noto Sans CJK SC'
-        }
+        'fixed':   { 'Zyyy': 'Noto Sans Mono', 'Hans': 'Noto Sans CJK SC' },
+        'sansserif': { 'Zyyy': 'Noto Sans',     'Hans': 'Noto Sans CJK SC' },
+        'serif':   { 'Zyyy': 'Noto Serif',     'Hans': 'Noto Serif CJK SC' },
+        'standard':{ 'Zyyy': 'Noto Sans',      'Hans': 'Noto Sans CJK SC' }
     }
 }
-
-prefs['webkit']['webprefs'].update(font_prefs)
-
-with open(prefs_file, 'w') as f:
-    json.dump(prefs, f, indent=2)
-" 2>/dev/null || echo "Chrome preferences will be set on first run"
-	fi
-
-	echo "Chrome font configuration completed."
-	echo "Please restart Chrome for changes to take effect."
-}
-
-setup_chrome_fonts
+prefs.setdefault('webkit', {}).setdefault('webprefs', {}).update(font_prefs)
+os.makedirs(os.path.dirname(prefs_file), exist_ok=True)
+with open(prefs_file, 'w', encoding='utf-8') as f:
+    json.dump(prefs, f, indent=2, ensure_ascii=False)
+PY
+fi
 
 # Install Docker
 if ! command -v docker &>/dev/null; then
