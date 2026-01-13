@@ -138,6 +138,25 @@ else
 	echo "Google Chrome already installed"
 fi
 
+# Check if Nerd Font already exists
+FONT_NAME="CaskaydiaCoveNerdFontMono-Regular.ttf"
+FONT_PATH="$HOME/.local/share/fonts/$FONT_NAME"
+
+if [ ! -f "$FONT_PATH" ]; then
+	echo "Nerd Font not found. Downloading and installing..."
+	# Download and install Nerd Font
+	wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/CascadiaCode.zip
+	unzip CascadiaCode.zip -d nerd-font-temp
+	mkdir -p ~/.local/share/fonts
+	mv nerd-font-temp/*.ttf ~/.local/share/fonts/
+	chmod 644 ~/.local/share/fonts/*.ttf
+	fc-cache -fv
+	rm -rf nerd-font-temp CascadiaCode.zip
+	echo "Nerd Font installed successfully."
+else
+	echo "Nerd Font already exists. Skipping download and installation."
+fi
+
 # Install coverage fonts (already present is fine)
 sudo apt update
 sudo apt install -y \
