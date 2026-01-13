@@ -13,7 +13,7 @@ check_success() {
 # Update and install necessary packages
 sudo apt update && sudo apt install -y \
 	xfce4-terminal i3 i3blocks tigervnc-standalone-server unzip fontconfig \
-	locales xclip
+	locales xclip dbus-x11
 check_success "Failed to install packages"
 
 # Add locale generation
@@ -39,9 +39,9 @@ EOF
 mkdir -p ~/.config/xfce4/terminal
 cat <<EOF >~/.config/xfce4/terminal/terminalrc
 [Configuration]
-FontName=monospace 13
+FontName=monospace 12
 BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
-BackgroundDarkness=0.95
+BackgroundDarkness=1.0
 ColorForeground=#d4d4d4
 ColorBackground=#1e1e1e
 ScrollingBar=TERMINAL_SCROLLBAR_NONE
