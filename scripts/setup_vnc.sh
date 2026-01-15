@@ -40,11 +40,31 @@ mkdir -p ~/.config/xfce4/terminal
 cat <<EOF >~/.config/xfce4/terminal/terminalrc
 [Configuration]
 FontName=monospace 12
-BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
-BackgroundDarkness=1.0
-ColorForeground=#d4d4d4
-ColorBackground=#1e1e1e
+MiscAlwaysShowTabs=FALSE
+MiscBell=FALSE
+MiscBordersDefault=TRUE
+MiscCursorBlinks=FALSE
+MiscCursorShape=TERMINAL_CURSOR_SHAPE_BLOCK
+MiscDefaultGeometry=80x24
+MiscInheritGeometry=FALSE
+MiscMenubarDefault=FALSE
+MiscMouseAutohide=FALSE
+MiscToolbarDefault=FALSE
+MiscConfirmClose=TRUE
+MiscCycleTabs=TRUE
+MiscTabCloseButtons=TRUE
+MiscTabPosition=GTK_POS_TOP
+MiscHighlightUrls=TRUE
 ScrollingBar=TERMINAL_SCROLLBAR_NONE
+BackgroundMode=TERMINAL_BACKGROUND_SOLID
+BackgroundDarkness=1.000000
+ColorForeground=#ffffff
+ColorBackground=#000000
+ColorCursor=#ffffff
+ColorBold=#ffffff
+ColorBoldUseDefault=FALSE
+ColorUseTheme=FALSE
+ColorPalette=#000000;#cd0000;#00cd00;#cdcd00;#0000ee;#cd00cd;#00cdcd;#e5e5e5;#7f7f7f;#ff0000;#00ff00;#ffff00;#5c5cff;#ff00ff;#00ffff;#ffffff
 EOF
 check_success "Failed to create Xresources file"
 
@@ -247,6 +267,9 @@ export LC_ALL=en_US.UTF-8
 
 # Load resources
 [ -r ~/.Xresources ] && xrdb ~/.Xresources
+
+# Set black background
+xsetroot -solid "#000000"
 
 command -v vncconfig >/dev/null 2>&1 && vncconfig -nowin -poll 1000 &
 
