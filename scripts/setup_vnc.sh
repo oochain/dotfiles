@@ -35,6 +35,11 @@ Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 EOF
 
+# Clean up any existing xfce4 configurations to avoid conflicts
+rm -rf ~/.config/xfce4/terminal/
+rm -rf ~/.config/xfce4/xfconf/
+rm -rf ~/.cache/xfce4/
+
 # Create xfce4-terminal config directory and file
 mkdir -p ~/.config/xfce4/terminal
 cat <<EOF >~/.config/xfce4/terminal/terminalrc
