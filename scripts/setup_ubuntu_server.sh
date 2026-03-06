@@ -13,21 +13,21 @@ log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Check if we have sudo privileges or can get them
 if ! sudo -v &>/dev/null; then
-	log_error "This script requires sudo privileges. Please enter your password when prompted."
-	exit 1
+    log_error "This script requires sudo privileges. Please enter your password when prompted."
+    exit 1
 fi
 
 # Keep sudo alive throughout the script
 while true; do
-	sudo -n true
-	sleep 60
-	kill -0 "$$" || exit
+    sudo -n true
+    sleep 60
+    kill -0 "$$" || exit
 done 2>/dev/null &
 
 # Prevent running as root directly
 if [ "$USER" = "root" ]; then
-	log_error "Do not run this script as the root user directly. Run as a normal user."
-	exit 1
+    log_error "Do not run this script as the root user directly. Run as a normal user."
+    exit 1
 fi
 
 ####################
@@ -48,36 +48,36 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y $CORE_PACKAGES $UTIL_PACKAGES $PYTHON_PACKAGES $NVIM_PACKAGES
 
 command_exists() {
-	command -v "$1" >/dev/null 2>&1
+    command -v "$1" >/dev/null 2>&1
 }
 
 # Install tree-sitter-cli for nvim
 if ! command_exists npm; then
-	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
-	# Source nvm without relying on environment variables
-	source ~/.nvm/nvm.sh
-	nvm install 22
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+    # Source nvm without relying on environment variables
+    source ~/.nvm/nvm.sh
+    nvm install 22
 fi
 npm install -g tree-sitter-cli
 
 # Install LazyGit
 if ! command_exists lazygit; then
-	echo "Installing LazyGit..."
-	LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-	curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-	tar xf lazygit.tar.gz lazygit
-	sudo install lazygit /usr/local/bin
+    echo "Installing LazyGit..."
+    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+    tar xf lazygit.tar.gz lazygit
+    sudo install lazygit /usr/local/bin
 else
-	echo "LazyGit already installed"
+    echo "LazyGit already installed"
 fi
 
 # Install Ripgrep
 if ! command_exists rg; then
-	echo "Installing Ripgrep..."
-	curl -LO https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep_14.1.0-1_amd64.deb
-	sudo dpkg -i ripgrep_14.1.0-1_amd64.deb
+    echo "Installing Ripgrep..."
+    curl -LO https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep_14.1.0-1_amd64.deb
+    sudo dpkg -i ripgrep_14.1.0-1_amd64.deb
 else
-	echo "Ripgrep already installed"
+    echo "Ripgrep already installed"
 fi
 
 # Install ruff
@@ -94,48 +94,48 @@ echo "Neovim v0.11.4 installed."
 
 # Install Terraform
 if ! command_exists terraform; then
-	echo "Installing Terraform..."
-	sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
-	wget -O- https://apt.releases.hashicorp.com/gpg |
-		gpg --dearmor |
-		sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null
-	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+    echo "Installing Terraform..."
+    sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+    wget -O- https://apt.releases.hashicorp.com/gpg |
+        gpg --dearmor |
+        sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
     https://apt.releases.hashicorp.com $(lsb_release -cs) main" |
-		sudo tee /etc/apt/sources.list.d/hashicorp.list
-	sudo apt update && sudo apt-get install -y terraform
+        sudo tee /etc/apt/sources.list.d/hashicorp.list
+    sudo apt update && sudo apt-get install -y terraform
 else
-	echo "Terraform already installed"
+    echo "Terraform already installed"
 fi
 
 # Install Packer
 if ! command_exists packer; then
-	echo "Installing Packer..."
-	if [ ! -f /usr/share/keyrings/hashicorp-archive-keyring.gpg ]; then
-		wget -O- https://apt.releases.hashicorp.com/gpg |
-			gpg --dearmor |
-			sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null
-	fi
-	if [ ! -f /etc/apt/sources.list.d/hashicorp.list ]; then
-		echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+    echo "Installing Packer..."
+    if [ ! -f /usr/share/keyrings/hashicorp-archive-keyring.gpg ]; then
+        wget -O- https://apt.releases.hashicorp.com/gpg |
+            gpg --dearmor |
+            sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null
+    fi
+    if [ ! -f /etc/apt/sources.list.d/hashicorp.list ]; then
+        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
 		https://apt.releases.hashicorp.com $(lsb_release -cs) main" |
-			sudo tee /etc/apt/sources.list.d/hashicorp.list
-	fi
-	sudo apt-get update && sudo apt-get install -y packer
+            sudo tee /etc/apt/sources.list.d/hashicorp.list
+    fi
+    sudo apt-get update && sudo apt-get install -y packer
 else
-	echo "Packer already installed"
+    echo "Packer already installed"
 fi
 
 # Install Google Chrome (can run on a VNC Ubuntu server without a GUI)
 if ! command_exists google-chrome; then
-	echo "Installing Google Chrome..."
-	wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-	sudo apt install -y ./google-chrome-stable_current_amd64.deb || {
-		sudo apt-get install -f -y
-		sudo apt install -y ./google-chrome-stable_current_amd64.deb
-	}
-	rm google-chrome-stable_current_amd64.deb
+    echo "Installing Google Chrome..."
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo apt install -y ./google-chrome-stable_current_amd64.deb || {
+        sudo apt-get install -f -y
+        sudo apt install -y ./google-chrome-stable_current_amd64.deb
+    }
+    rm google-chrome-stable_current_amd64.deb
 else
-	echo "Google Chrome already installed"
+    echo "Google Chrome already installed"
 fi
 
 # Check if Nerd Font already exists
@@ -143,25 +143,25 @@ FONT_NAME="CaskaydiaCoveNerdFontMono-Regular.ttf"
 FONT_PATH="$HOME/.local/share/fonts/$FONT_NAME"
 
 if [ ! -f "$FONT_PATH" ]; then
-	echo "Nerd Font not found. Downloading and installing..."
-	# Download and install Nerd Font
-	wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/CascadiaCode.zip
-	unzip CascadiaCode.zip -d nerd-font-temp
-	mkdir -p ~/.local/share/fonts
-	mv nerd-font-temp/*.ttf ~/.local/share/fonts/
-	chmod 644 ~/.local/share/fonts/*.ttf
-	fc-cache -fv
-	rm -rf nerd-font-temp CascadiaCode.zip
-	echo "Nerd Font installed successfully."
+    echo "Nerd Font not found. Downloading and installing..."
+    # Download and install Nerd Font
+    wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/CascadiaCode.zip
+    unzip CascadiaCode.zip -d nerd-font-temp
+    mkdir -p ~/.local/share/fonts
+    mv nerd-font-temp/*.ttf ~/.local/share/fonts/
+    chmod 644 ~/.local/share/fonts/*.ttf
+    fc-cache -fv
+    rm -rf nerd-font-temp CascadiaCode.zip
+    echo "Nerd Font installed successfully."
 else
-	echo "Nerd Font already exists. Skipping download and installation."
+    echo "Nerd Font already exists. Skipping download and installation."
 fi
 
 # Install coverage fonts (already present is fine)
 sudo apt update
 sudo apt install -y \
-	fonts-noto-core fonts-noto-cjk fonts-noto-color-emoji fonts-noto-mono \
-	fonts-dejavu fonts-unifont || true
+    fonts-noto-core fonts-noto-cjk fonts-noto-color-emoji fonts-noto-mono \
+    fonts-dejavu fonts-unifont || true
 
 # Set up a font alias for monospace to use the desired Nerd Font.
 # This ensures that applications requesting a generic "monospace" font
@@ -190,8 +190,8 @@ fc-cache -fv
 # Set Chrome font prefs (Latin vs CJK)
 CHROME_PREFS_DIR="$HOME/.config/google-chrome/Default"
 if [ -d "$CHROME_PREFS_DIR" ]; then
-	[ -f "$CHROME_PREFS_DIR/Preferences" ] && cp "$CHROME_PREFS_DIR/Preferences" "$CHROME_PREFS_DIR/Preferences.backup"
-	python3 - <<'PY' 2>/dev/null || echo "Chrome preferences will be set on first run"
+    [ -f "$CHROME_PREFS_DIR/Preferences" ] && cp "$CHROME_PREFS_DIR/Preferences" "$CHROME_PREFS_DIR/Preferences.backup"
+    python3 - <<'PY' 2>/dev/null || echo "Chrome preferences will be set on first run"
 import json, os
 prefs_file = os.path.expanduser('~/.config/google-chrome/Default/Preferences')
 prefs = {}
@@ -216,20 +216,20 @@ fi
 
 # Install Docker
 if ! command -v docker &>/dev/null; then
-	echo "Installing Docker..."
-	curl -fsSL https://get.docker.com -o get-docker.sh
-	sudo sh get-docker.sh
+    echo "Installing Docker..."
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sudo sh get-docker.sh
 else
-	echo "Docker already installed"
+    echo "Docker already installed"
 fi
 sudo usermod -aG docker $USER
 
 # For Amazon ECR Credential Helper
 if ! command_exists docker-credential-ecr-login; then
-	echo "Installing Amazon ECR Credential Helper..."
-	sudo apt install -y amazon-ecr-credential-helper
+    echo "Installing Amazon ECR Credential Helper..."
+    sudo apt install -y amazon-ecr-credential-helper
 else
-	echo "ECR Credential Helper already installed"
+    echo "ECR Credential Helper already installed"
 fi
 mkdir -p ~/.docker
 echo '{ "credsStore": "ecr-login" }' >~/.docker/config.json
@@ -237,36 +237,36 @@ echo '{ "credsStore": "ecr-login" }' >~/.docker/config.json
 echo "Setting up AWS tools..."
 # Install AWS CLI v2
 if command -v aws &>/dev/null; then
-	AWS_VERSION=$(aws --version 2>&1 | cut -d/ -f2 | cut -d' ' -f1)
-	echo "AWS CLI v$AWS_VERSION is already installed"
-	echo "Updating AWS CLI..."
-	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-	unzip -q awscliv2.zip
-	sudo ./aws/install --update
+    AWS_VERSION=$(aws --version 2>&1 | cut -d/ -f2 | cut -d' ' -f1)
+    echo "AWS CLI v$AWS_VERSION is already installed"
+    echo "Updating AWS CLI..."
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip -q awscliv2.zip
+    sudo ./aws/install --update
 else
-	echo "Installing AWS CLI v2..."
-	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-	unzip -q awscliv2.zip
-	sudo ./aws/install
+    echo "Installing AWS CLI v2..."
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip -q awscliv2.zip
+    sudo ./aws/install
 fi
 rm -fr aws/ awscliv2.zip
 
 # For AWS SSM Plugin
 if ! command_exists session-manager-plugin; then
-	echo "Installing AWS SSM Plugin..."
-	curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
-	sudo dpkg -i session-manager-plugin.deb
+    echo "Installing AWS SSM Plugin..."
+    curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+    sudo dpkg -i session-manager-plugin.deb
 else
-	echo "AWS SSM Plugin already installed"
+    echo "AWS SSM Plugin already installed"
 fi
 
 # Install uv (Python package manager)
 if ! command_exists uv; then
-	echo "Installing uv..."
-	curl -LsSf https://astral.sh/uv/install.sh | sh
+    echo "Installing uv..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 else
-	echo "Updating uv..."
-	uv self update
+    echo "Updating uv..."
+    uv self update
 fi
 
 # Install rust + cargo (starship dependency)
@@ -288,31 +288,31 @@ rm -rf litestream-v0.3.13-linux-amd64.deb
 
 # Add paths to ~/.bashrc if they don't exist
 declare -a paths=(
-	'source ~/git-subrepo/.rc'
-	'. "$HOME/.cargo/env"'
-	'export PATH="$PATH:/opt/nvim-linux-x86_64/bin"'
-	'export PATH="$PATH:$HOME/.local/share/nvim/lazy-rocks/hererocks/bin"'
-	'eval "$($HOME/.local/bin/uv generate-shell-completion bash)"'
-	'eval "$($HOME/.local/bin/uvx --generate-shell-completion bash)"'
-	'eval "$(starship init bash)"'
+    'source ~/git-subrepo/.rc'
+    '. "$HOME/.cargo/env"'
+    'export PATH="$PATH:/opt/nvim-linux-x86_64/bin"'
+    'export PATH="$PATH:$HOME/.local/share/nvim/lazy-rocks/hererocks/bin"'
+    'eval "$($HOME/.local/bin/uv generate-shell-completion bash)"'
+    'eval "$($HOME/.local/bin/uvx --generate-shell-completion bash)"'
+    'eval "$(starship init bash)"'
 )
 
 for path in "${paths[@]}"; do
-	grep -qxF "$path" ~/.bashrc || echo "$path" >>~/.bashrc
+    grep -qxF "$path" ~/.bashrc || echo "$path" >>~/.bashrc
 done
 
 # Install TPM for tmux (only if not already installed)
 TPM_PATH="$HOME/.tmux/plugins/tpm"
 if [ ! -d "$TPM_PATH" ]; then
-	echo "Installing TPM for tmux..."
-	mkdir -p "$TPM_PATH"
-	git clone https://github.com/tmux-plugins/tpm "$TPM_PATH"
-	# Only source if tmux.conf exists and tmux is running
-	if [ -f "$HOME/.tmux.conf" ] && tmux list-sessions &>/dev/null; then
-		tmux source-file "$HOME/.tmux.conf"
-	fi
+    echo "Installing TPM for tmux..."
+    mkdir -p "$TPM_PATH"
+    git clone https://github.com/tmux-plugins/tpm "$TPM_PATH"
+    # Only source if tmux.conf exists and tmux is running
+    if [ -f "$HOME/.tmux.conf" ] && tmux list-sessions &>/dev/null; then
+        tmux source-file "$HOME/.tmux.conf"
+    fi
 else
-	echo "TPM for tmux already installed."
+    echo "TPM for tmux already installed."
 fi
 
 # Ensure standalone uv is first and clean PATH
