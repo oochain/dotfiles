@@ -260,14 +260,10 @@ else
     echo "AWS SSM Plugin already installed"
 fi
 
-# Install uv (Python package manager)
-if ! command_exists uv; then
-    echo "Installing uv..."
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-else
-    echo "Updating uv..."
-    uv self update
-fi
+# Install uv (Python package manager) globally
+echo "Installing/Updating uv globally..."
+rm -f "$HOME/.local/bin/uv" "$HOME/.local/bin/uvx"
+curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR=/usr/local/bin sh
 
 # Install rust + cargo (starship dependency)
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -292,8 +288,7 @@ declare -a paths=(
     '. "$HOME/.cargo/env"'
     'export PATH="$PATH:/opt/nvim-linux-x86_64/bin"'
     'export PATH="$PATH:$HOME/.local/share/nvim/lazy-rocks/hererocks/bin"'
-    'eval "$($HOME/.local/bin/uv generate-shell-completion bash)"'
-    'eval "$($HOME/.local/bin/uvx --generate-shell-completion bash)"'
+    'if command -v uv >/dev/null; then eval "$(uv generate-shell-completion bash)"; eval "$(uvx --generate-shell-completion bash)"; fi'
     'eval "$(starship init bash)"'
 )
 
