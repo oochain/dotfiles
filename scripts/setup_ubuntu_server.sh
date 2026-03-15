@@ -260,10 +260,9 @@ else
     echo "AWS SSM Plugin already installed"
 fi
 
-# Install uv (Python package manager) globally
-echo "Installing/Updating uv globally..."
-rm -f "$HOME/.local/bin/uv" "$HOME/.local/bin/uvx"
-curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR=/usr/local/bin sh
+# Install uv (Python package manager)
+echo "Installing/Updating uv..."
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install rust + cargo (starship dependency)
 curl https://sh.rustup.rs -sSf | sh -s -- -y
