@@ -5,7 +5,9 @@
 add_newline = false
 
 [username]
-disabled = true
+show_always = true
+format = "[$user]($style) "
+style_user = "bold green"
 
 [hostname]
 disabled = true
