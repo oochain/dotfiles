@@ -31,7 +31,7 @@ during our sessions:
   all Python code.
 - **Environment:** We use **uv** for package and lockfile management.
 - **Testing:** Prefer `pytest` with Google-style docstrings for public
-  functions.
+  functions. **Do not modify the tests unless I say so.**
 
 ## Shell Scripting
 
