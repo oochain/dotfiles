@@ -55,4 +55,9 @@ create_symlink "$HOME/dotfiles/.tmux.conf" "$HOME/.tmux.conf"
 create_symlink "$HOME/dotfiles/.config/nvim" "$HOME/.config/nvim"
 create_symlink "$HOME/dotfiles/.config/starship.toml" "$HOME/.config/starship.toml"
 
+# Gemini CLI configuration
+mkdir -p "$HOME/.gemini"
+create_symlink "$HOME/dotfiles/gemini/GEMINI.md" "$HOME/.gemini/GEMINI.md"
+create_symlink "$HOME/dotfiles/gemini/settings.json" "$HOME/.gemini/settings.json"
+
 echo -e "${GREEN}Completed! Backup directory: $backup_dir${NC}"
