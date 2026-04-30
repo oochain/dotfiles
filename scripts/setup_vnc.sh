@@ -13,7 +13,7 @@ check_success() {
 # Update and install necessary packages
 sudo apt update && sudo apt install -y \
 	xfce4-terminal i3 i3blocks tigervnc-standalone-server unzip fontconfig \
-	locales xclip dbus-x11
+	locales xclip dbus-x11 sqlitebrowser
 check_success "Failed to install packages"
 
 # Add locale generation
@@ -98,6 +98,9 @@ bindsym \$mod+Shift+q kill
 
 # Start dmenu
 bindsym \$mod+d exec dmenu_run
+
+# Start sqlitebrowser
+bindsym \$mod+Shift+s exec sqlitebrowser
 
 # Change focus
 bindsym \$mod+h focus left
