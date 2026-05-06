@@ -38,3 +38,16 @@ during our sessions:
 - **Standards:** Use **ShellCheck** and **shfmt** for all bash scripts.
 - **Style:** Prefer `[[ ]]` over `[ ]` and use clear, descriptive variable
   names.
+
+## Ubiquitous Language & Shared Knowledge
+
+- **Auto-Maintenance:** Proactively identify and document new domain terms,
+  business rules, and architectural patterns into a `UBIQUITOUS_LANGUAGE.md`
+  file located in the private memory folder (`~/.gemini/tmp/dotfiles/memory/`).
+- **Update Rule:** Automatically update this file when new concepts are
+  established or existing ones evolve. This file serves as the "source of truth"
+  for the repository's context.
+- **Context Loading:** At the start of every session, check this file to align
+  with the project's established language.
+- **Git Safety:** This file is for persistent context and MUST NOT be committed
+  to git unless explicitly requested.
