@@ -51,3 +51,8 @@ during our sessions:
   with the project's established language.
 - **Git Safety:** This file is for persistent context and MUST NOT be committed
   to git unless explicitly requested.
+
+## Coding Style & Conventions
+
+- **Comments:** Avoid using numbered lists (e.g., 1., 2., 3.) in code comments.
+  Prefer plain descriptive paragraphs or bullet points if necessary.
