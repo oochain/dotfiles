@@ -24,36 +24,59 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
--- Python: run pre-commit after save so the pinned ruff version (from
--- .pre-commit-config.yaml) formats the file, then reload the buffer.
--- The `_pre_commit_running` flag stops the reload from re-triggering this autocmd.
+-- Python: run pre-commit after save, mirroring what the git pre-commit hook
+-- does, so the file is formatted before you commit. The `_pre_commit_running`
+-- flag prevents the buffer reload from re-triggering this autocmd.
 local _pre_commit_running = false
+
+-- Read the INSTALL_PYTHON path that `pre-commit install` embedded in the git
+-- hook. That is the same Python binary the hook uses, so we stay consistent.
+local function get_hook_python(git_root)
+  local hook = git_root .. "/.git/hooks/pre-commit"
+  if vim.fn.filereadable(hook) == 0 then
+    return nil
+  end
+  for line in io.lines(hook) do
+    local python = line:match("^INSTALL_PYTHON=(.+)$")
+    if python then
+      return python
+    end
+  end
+  return nil
+end
 
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "*.py",
   callback = function()
-    -- Skip if we are already inside a pre-commit run to avoid a reload loop.
     if _pre_commit_running then
       return
     end
 
-    -- Only run when the repo has a pre-commit config file.
     local git_root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
     if not git_root or vim.v.shell_error ~= 0 then
       return
     end
-    local config_path = git_root .. "/.pre-commit-config.yaml"
-    if vim.fn.filereadable(config_path) == 0 then
+    if vim.fn.filereadable(git_root .. "/.pre-commit-config.yaml") == 0 then
       return
     end
 
-    -- Use the absolute path so pre-commit always finds the file.
+    local python = get_hook_python(git_root)
+    if not python or vim.fn.executable(python) == 0 then
+      return
+    end
+
     local file = vim.fn.expand("%:p")
-    local cmd = string.format("pre-commit run --files %s", vim.fn.shellescape(file))
+    -- Run from git_root so pre-commit finds .pre-commit-config.yaml.
+    local cmd = string.format(
+      "cd %s && %s -mpre_commit run --files %s",
+      vim.fn.shellescape(git_root),
+      vim.fn.shellescape(python),
+      vim.fn.shellescape(file)
+    )
 
     _pre_commit_running = true
     vim.fn.system(cmd)
-    -- Reload only when pre-commit actually changed the file (exit code 1 = fixed).
+    -- pre-commit exits 1 when a hook fixed something, reload to see changes.
     if vim.v.shell_error == 1 then
       vim.cmd("e!")
     end
