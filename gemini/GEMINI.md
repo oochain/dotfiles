@@ -27,17 +27,19 @@ during our sessions:
 
 - **Standards:** Follow PEP 8 and modern Python features (like `pathlib` and
   type hints).
-- **Linting & Formatting:** We use **Ruff** (`ruff-check`, `ruff-format`) for
-  all Python code.
 - **Environment:** We use **uv** for package and lockfile management.
 - **Testing:** Prefer `pytest` with Google-style docstrings for public
   functions. **Do not modify the tests unless I say so.**
 
 ## Shell Scripting
 
-- **Standards:** Use **ShellCheck** and **shfmt** for all bash scripts.
 - **Style:** Prefer `[[ ]]` over `[ ]` and use clear, descriptive variable
   names.
+
+## Command & Tool Execution Rules
+
+- **No Automatic Git Commands:** Do NOT run git commands (`git status`, `git diff`, `git commit`, `git checkout`, etc.) automatically. The user manages git manually.
+- **No Automatic Formatting or Linting:** Do NOT run `ruff`, `black`, `shellcheck`, `shfmt`, `pytest`, or any linters/formatters automatically. The user will run them manually.
 
 ## Ubiquitous Language & Shared Knowledge
 
