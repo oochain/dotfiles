@@ -37,15 +37,13 @@ fi
 # Package groups
 CORE_PACKAGES="build-essential libreadline-dev libssl-dev"
 UTIL_PACKAGES="curl wget unzip unrar jq tree \
-    fail2ban network-manager \
-    fonts-noto-cjk language-pack-zh-hans xfonts-wqy \
+    fail2ban fonts-noto-cjk language-pack-zh-hans xfonts-wqy \
     moreutils pwgen sqlite3 xclip nethogs"
-PYTHON_PACKAGES="clang python3-pip python3-venv pipx"
-NVIM_PACKAGES="fd-find lua5.1 luarocks fish fzf"
+NVIM_PACKAGES="fd-find"
 
 echo "Installing system packages..."
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y $CORE_PACKAGES $UTIL_PACKAGES $PYTHON_PACKAGES $NVIM_PACKAGES
+sudo apt install -y $CORE_PACKAGES $UTIL_PACKAGES $NVIM_PACKAGES
 
 command_exists() {
     command -v "$1" >/dev/null 2>&1
@@ -71,26 +69,26 @@ else
     echo "LazyGit already installed"
 fi
 
-# Install Ripgrep
+# Install Ripgrep (used for lazyvim)
+RIPGREP_VERSION="15.2.0"
 if ! command_exists rg; then
     echo "Installing Ripgrep..."
-    curl -LO https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep_14.1.0-1_amd64.deb
-    sudo dpkg -i ripgrep_14.1.0-1_amd64.deb
+    curl -LO https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/ripgrep_${RIPGREP_VERSION}-1_amd64.deb
+    sudo dpkg -i ripgrep_${RIPGREP_VERSION}-1_amd64.deb
+    sudo rm ripgrep_${RIPGREP_VERSION}-1_amd64.deb
 else
     echo "Ripgrep already installed"
 fi
 
-# Install ruff
-curl -LsSf https://astral.sh/ruff/install.sh | sh
-
-# Install/Update Neovim to v0.11.4
-echo "Installing/Updating Neovim to v0.11.4..."
+# Install/Update Neovim
+NVIM_VERSION="0.12.5"
+echo "Installing/Updating Neovim to v${NVIM_VERSION}..."
 sudo rm -rf /opt/nvim /opt/nvim-linux-x86_64 /usr/local/bin/nvim # Remove old versions
-curl -LO https://github.com/neovim/neovim/releases/download/v0.11.4/nvim-linux-x86_64.appimage
+curl -LO https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-linux-x86_64.appimage
 sudo mv nvim-linux-x86_64.appimage /opt/nvim.appimage
 sudo chmod +x /opt/nvim.appimage
 sudo ln -s /opt/nvim.appimage /usr/local/bin/nvim
-echo "Neovim v0.11.4 installed."
+echo "Neovim v${NVIM_VERSION} installed."
 
 # Install Terraform
 if ! command_exists terraform; then
@@ -133,7 +131,7 @@ if ! command_exists google-chrome; then
         sudo apt-get install -f -y
         sudo apt install -y ./google-chrome-stable_current_amd64.deb
     }
-    rm google-chrome-stable_current_amd64.deb
+    sudo rm google-chrome-stable_current_amd64.deb
 else
     echo "Google Chrome already installed"
 fi
@@ -249,13 +247,14 @@ else
     unzip -q awscliv2.zip
     sudo ./aws/install
 fi
-rm -fr aws/ awscliv2.zip
+sudo rm -fr aws/ awscliv2.zip
 
 # For AWS SSM Plugin
 if ! command_exists session-manager-plugin; then
     echo "Installing AWS SSM Plugin..."
     curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
     sudo dpkg -i session-manager-plugin.deb
+    sudo rm session-manager-plugin.deb
 else
     echo "AWS SSM Plugin already installed"
 fi
@@ -271,15 +270,16 @@ curl https://sh.rustup.rs -sSf | sh -s -- -y
 curl -sS https://starship.rs/install.sh | sh -s -- -y
 
 # Install git-subrepo
-rm -rf ~/git-subrepo
+sudo rm -rf ~/git-subrepo
 git clone https://github.com/ingydotnet/git-subrepo ~/git-subrepo
 
 # Install litestream (just need cli so no need to launch systemctl)
-wget https://github.com/benbjohnson/litestream/releases/download/v0.3.13/litestream-v0.3.13-linux-amd64.deb
-sudo dpkg -i litestream-v0.3.13-linux-amd64.deb
+LITESTREAM_VERSION="0.3.13"
+wget https://github.com/benbjohnson/litestream/releases/download/v${LITESTREAM_VERSION}/litestream-v${LITESTREAM_VERSION}-linux-amd64.deb
+sudo dpkg -i litestream-v${LITESTREAM_VERSION}-linux-amd64.deb
 # systemctl enable litestream
 # systemctl start litestream
-rm -rf litestream-v0.3.13-linux-amd64.deb
+sudo rm -rf litestream-v${LITESTREAM_VERSION}-linux-amd64.deb
 
 # Add paths to ~/.bashrc if they don't exist
 declare -a paths=(
