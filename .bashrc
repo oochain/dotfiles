@@ -310,8 +310,12 @@ rm() {
         fi
     done
 }
-if command -v uv >/dev/null; then eval "$(uv generate-shell-completion bash)"; eval "$(uvx --generate-shell-completion bash)"; fi
-
+if command -v uv >/dev/null; then
+    eval "$(uv generate-shell-completion bash)"
+    eval "$(uvx --generate-shell-completion bash)"
+fi
 
 # Added by Antigravity CLI installer
 export PATH="/home/chen/.local/bin:$PATH"
+# Disable agy logo
+export AGY_CLI_HIDE_LOGO=true
