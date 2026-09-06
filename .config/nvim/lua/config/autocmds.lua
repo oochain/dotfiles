@@ -66,21 +66,31 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     end
 
     local file = vim.fn.expand("%:p")
-    -- Run from git_root so pre-commit finds .pre-commit-config.yaml.
-    local cmd = string.format(
-      "cd %s && %s -mpre_commit run --files %s",
-      vim.fn.shellescape(git_root),
-      vim.fn.shellescape(python),
-      vim.fn.shellescape(file)
-    )
+    local bufnr = vim.api.nvim_get_current_buf()
 
     _pre_commit_running = true
-    vim.fn.system(cmd)
-    -- pre-commit exits 1 when a hook fixed something, reload to see changes.
-    if vim.v.shell_error == 1 then
-      vim.cmd("e!")
-    end
-    _pre_commit_running = false
+
+    -- Run asynchronously so Neovim stays responsive while pre-commit works.
+    -- jobstart with a table avoids shell-quoting issues with paths.
+    vim.fn.jobstart({ python, "-mpre_commit", "run", "--files", file }, {
+      cwd = git_root,
+      on_exit = function(_, code)
+        _pre_commit_running = false
+        -- Exit code 1 means a hook rewrote the file. Use vim.schedule so
+        -- the reload runs back on the main thread, not inside the job callback.
+        if code == 1 then
+          vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(bufnr) then
+              -- checktime tells vim to silently accept the external change,
+              -- which prevents the "WARNING: file changed" message.
+              vim.api.nvim_buf_call(bufnr, function()
+                vim.cmd("checktime")
+              end)
+            end
+          end)
+        end
+      end,
+    })
   end,
 })
 
