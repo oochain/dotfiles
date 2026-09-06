@@ -4,16 +4,16 @@ set -e
 
 # Function to check if a command was successful
 check_success() {
-	if [ $? -ne 0 ]; then
-		echo "Error: $1"
-		exit 1
-	fi
+    if [ $? -ne 0 ]; then
+        echo "Error: $1"
+        exit 1
+    fi
 }
 
 # Update and install necessary packages
 sudo apt update && sudo apt install -y \
-	xfce4-terminal i3 i3blocks tigervnc-standalone-server unzip fontconfig \
-	locales xclip dbus-x11 sqlitebrowser
+    xfce4-terminal i3 i3blocks tigervnc-standalone-server unzip fontconfig \
+    locales xclip dbus-x11 sqlitebrowser
 check_success "Failed to install packages"
 
 # Add locale generation
@@ -21,8 +21,8 @@ sudo locale-gen en_US.UTF-8 zh_CN.UTF-8 ja_JP.UTF-8
 
 # Set VNC password only if it doesn't exist
 if [ ! -f ~/.vnc/passwd ]; then
-	vncpasswd
-	check_success "Failed to set VNC password"
+    vncpasswd
+    check_success "Failed to set VNC password"
 fi
 
 # Create/Update Xresources file
@@ -182,6 +182,9 @@ bindsym \$mod+r mode "resize"
 default_border pixel 2
 default_floating_border pixel 2
 
+# Automatically close vncconfig GUI window so terminal takes full screen
+for_window [class="^Vncconfig$"] kill
+
 # Start i3bar to display a workspace bar
 bar {
         status_command i3blocks
@@ -205,41 +208,46 @@ check_success "Failed to create i3 config"
 
 # Create and configure i3blocks
 mkdir -p ~/.config/i3blocks
+
+# Download official bandwidth script from i3blocks-contrib
+curl -fsSL https://raw.githubusercontent.com/vivien/i3blocks-contrib/master/bandwidth/bandwidth -o ~/.config/i3blocks/bandwidth
+chmod +x ~/.config/i3blocks/bandwidth
+
 cat <<EOF >~/.config/i3blocks/config
 # i3blocks config file
-# Global properties
-command=/usr/share/i3blocks/\$BLOCK_NAME
 separator_block_width=15
 markup=none
 
 # Network interface monitoring with green IP
 [iface]
-#instance=wlan0
+command=hostname -I | awk '{print \$1}'
 color=#00FF00
 interval=10
 
-# Network speed
+# Network speed (download & upload)
 [bandwidth]
-#instance=eth0
+command=~/.config/i3blocks/bandwidth
 color=#00AAFF
-interval=5
+interval=2
 
 # CPU usage
 [cpu_usage]
-label=CPU
+label=CPU 
+command=awk '{print \$1}' /proc/loadavg
 color=#FF5555
-interval=10
-min_width=CPU: 100.00%
+interval=5
 
 # Memory usage
 [memory]
-label=MEM USED
+label=MEM USED 
+command=free -h | awk '/^Mem:/ {print \$3}'
 color=#88FF88
-interval=30
+interval=10
 
 # Disk usage
 [disk]
-label=DISK FREE
+label=DISK FREE 
+command=df -h / | awk 'NR==2 {print \$4}'
 color=#FFAA00
 interval=30
 
@@ -286,13 +294,23 @@ exec i3 -V >> /tmp/i3log 2>&1
 EOF
 chmod +x ~/.vnc/xstartup
 
-# Create VNC config file
+# Create VNC config files
+mkdir -p ~/.config
+ln -sfn ~/.vnc ~/.config/tigervnc
+
 cat <<EOF >~/.vnc/config
 SendCutText=1
 AcceptCutText=1
 localhost=no
 geometry=2560x1440
 depth=24
+EOF
+
+cat <<EOF >~/.vnc/tigervnc.conf
+\$localhost = "no";
+\$geometry = "2560x1440";
+\$depth = "24";
+\$vncStartup = "\$ENV{HOME}/.vnc/xstartup";
 EOF
 check_success "Failed to create VNC config"
 
@@ -306,7 +324,7 @@ After=syslog.target network.target
 Type=forking
 User=$USER
 ExecStartPre=-/bin/sh -c '/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :'
-ExecStart=/usr/bin/vncserver :%i
+ExecStart=/usr/bin/vncserver :%i -localhost no
 ExecStop=/usr/bin/vncserver -kill :%i
 Restart=on-failure
 RestartSec=5
