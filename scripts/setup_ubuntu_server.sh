@@ -36,7 +36,7 @@ fi
 
 # Package groups
 CORE_PACKAGES="build-essential libreadline-dev libssl-dev"
-UTIL_PACKAGES="curl wget unzip unrar jq tree \
+UTIL_PACKAGES="curl wget unzip unrar jq tree expect \
     fail2ban fonts-noto-cjk language-pack-zh-hans xfonts-wqy \
     moreutils pwgen sqlite3 xclip nethogs"
 NVIM_PACKAGES="fd-find"
