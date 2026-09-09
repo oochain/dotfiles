@@ -58,3 +58,15 @@ during our sessions:
 
 - **Comments:** Avoid using numbered lists (e.g., 1., 2., 3.) in code comments.
   Prefer plain descriptive paragraphs or bullet points if necessary.
+
+## Token Efficiency
+
+- **Ask before reading:** For simple or ambiguous tasks, ask one clarifying
+  question first. Do NOT proactively read files or search the codebase unless
+  the task clearly requires it.
+- **Short answers for small tasks:** Give a short, direct answer. No long
+  preambles, summaries, or re-explanations of what you just did.
+- **One file at a time:** Read only the specific file or section needed. Do not
+  load extra files "just in case."
+- **No unsolicited extras:** Do not add unrequested tests, docs, refactors, or
+  alternative implementations unless the user asks.
