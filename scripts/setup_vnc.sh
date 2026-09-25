@@ -327,7 +327,9 @@ ExecStartPre=-/bin/sh -c '/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :'
 ExecStart=/usr/bin/vncserver :%i -localhost no
 ExecStop=/usr/bin/vncserver -kill :%i
 Restart=on-failure
-RestartSec=5
+RestartSec=10
+StartLimitIntervalSec=120
+StartLimitBurst=5
 
 [Install]
 WantedBy=multi-user.target
