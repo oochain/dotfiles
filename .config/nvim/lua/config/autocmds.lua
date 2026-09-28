@@ -104,3 +104,18 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.bo.expandtab = true
   end,
 })
+
+-- pyproject.toml: use 4-space indentation.
+-- Using FileType event so this runs after the filetype plugin sets defaults,
+-- ensuring our shiftwidth is not overwritten back to 2.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "toml",
+  callback = function()
+    if vim.fn.expand("%:t") == "pyproject.toml" then
+      vim.bo.shiftwidth = 4
+      vim.bo.tabstop = 4
+      vim.bo.softtabstop = 4
+      vim.bo.expandtab = true
+    end
+  end,
+})

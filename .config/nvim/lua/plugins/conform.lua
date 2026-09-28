@@ -41,6 +41,11 @@ return {
         html = { "prettier" },
         css = { "prettier" },
         scss = { "prettier" },
+        -- Taplo always expands arrays to one element per line, which breaks
+        -- manually grouped arrays (e.g. ruff lint select with inline comments).
+        -- lsp_format = "never" prevents conform from falling back to Taplo LSP
+        -- formatting when no other formatter is configured for TOML.
+        toml = { lsp_format = "never" },
       },
     },
   },
