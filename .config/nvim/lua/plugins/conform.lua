@@ -2,7 +2,7 @@ local function get_ruff_version()
   local precommit = vim.fn.getcwd() .. "/.pre-commit-config.yaml"
 
   if vim.fn.filereadable(precommit) == 0 then
-    return "0.15.4" -- fallback
+    return "0.16.8" -- fallback
   end
 
   local in_ruff_repo = false
