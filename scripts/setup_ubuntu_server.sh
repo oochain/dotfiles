@@ -295,18 +295,33 @@ for path in "${paths[@]}"; do
     grep -qxF "$path" ~/.bashrc || echo "$path" >>~/.bashrc
 done
 
-# Install TPM for tmux (only if not already installed)
+# Configure tmux - always overwrite symlink so rerun picks up latest dotfiles
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ln -sf "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
+echo "Linked ~/.tmux.conf -> $DOTFILES_DIR/.tmux.conf"
+
+# Fix: status-interval must be set so tmux-continuum autosave doesn't stall
+# on tmux 3.x, the status-bar #(...) command is lazily cached and stops
+# re-running after a while unless the interval is explicitly short.
+grep -qxF 'set -g status-interval 5' "$HOME/.tmux.conf" || \
+    echo 'set -g status-interval 5' >> "$HOME/.tmux.conf"
+
+# Install TPM for tmux
 TPM_PATH="$HOME/.tmux/plugins/tpm"
 if [ ! -d "$TPM_PATH" ]; then
     echo "Installing TPM for tmux..."
-    mkdir -p "$TPM_PATH"
     git clone https://github.com/tmux-plugins/tpm "$TPM_PATH"
-    # Only source if tmux.conf exists and tmux is running
-    if [ -f "$HOME/.tmux.conf" ] && tmux list-sessions &>/dev/null; then
-        tmux source-file "$HOME/.tmux.conf"
-    fi
-else
-    echo "TPM for tmux already installed."
+fi
+
+# Install/update all plugins headlessly (works without an active tmux session)
+if [ -x "$TPM_PATH/bin/install_plugins" ]; then
+    echo "Installing tmux plugins via TPM..."
+    "$TPM_PATH/bin/install_plugins"
+fi
+
+# Reload config in any running tmux server
+if tmux list-sessions &>/dev/null; then
+    tmux source-file "$HOME/.tmux.conf"
 fi
 
 # Ensure standalone uv is first and clean PATH
